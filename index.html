@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>个性化二维码生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        /* 基础样式 */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        /* 控制面板样式 */
+        .control-panel {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* 输入组样式 */
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 预览区域 */
+        #qrcode {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        button {
+            background: # 02196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: # 01976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>个性化二维码生成器</h1>
+        
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="input-group">
+                <label>二维码内容：</label>
+                <input type="text" id="qrContent" placeholder="输入URL或文本" style="flex:1; padding:8px">
+            </div>
+
+            <div class="input-group">
+                <label>前景色：</label>
+                <input type="color" id="fgColor" value="# 000000">
+                
+                <label>背景色：</label>
+                <input type="color" id="bgColor" value="#ffffff">
+                
+                <label>尺寸：</label>
+                <input type="range" id="qrSize" min="100" max="800" value="200">
+            </div>
+
+            <div class="input-group">
+                <label>添加Logo：</label>
+                <input type="file" id="logoUpload" accept="image/*">
+                
+                <label>纠错等级：</label>
+                <select id="errorLevel">
+                    <option value="L">L (低)</option>
+                    <option value="M">M (中)</option>
+                    <option value="Q">Q (高)</option>
+                    <option value="H">H (最高)</option>
+                </select>
+            </div>
+            
+            <button onclick="generateQR()">生成二维码</button>
+            <button onclic!-- 二维码预览区 -->
+        <div id="qrcode"><数
+        function generateQR() {
+            const config = {  height: parseInt(document.getElementById('qrSize').value),
+                colorDark: document.getElementById('fgColor').value,
+                colorLight: documenr').value,
+                correctLevel: Qw QRCode(container, config);
+
+            // 添加Logd('logoUpload').files[0];
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = container.querySelector('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // 计算Logo尺寸（二维码宽度的20%）
+                        const logoSize = canvas.width * 0.2;
+                        const x = (canvas.width - logoSize) / 2;
+                        const y = (canvas.height - logoSize) / 2;
+                        
+                        // 绘制Logo
+                        ctx.drawImage(img, x, y, logoSize, logoSize);
+                    };
+                };
+                reader.readAsDataURL(logoFile);
+            }
+        }
+
+        // 导出功能
+        function exportQR() {
+            const canvas = document.querySelector('canvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // 实时预览（优化性能的防抖处理）
+        let timeout;
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(generateQR, 300);
+            });
+        });
+    </script>
+</body>
+</html>
